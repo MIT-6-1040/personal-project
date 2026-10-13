@@ -1,0 +1,293 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  color: #111827;
+  background: #f9fafb;
+}
+
+main,
+.topbar {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+main {
+  padding-bottom: 3rem;
+}
+
+h1 {
+  margin: 1.5rem 0 0.5rem;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.8rem;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+button.primary {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
+}
+
+button.danger {
+  color: #dc2626;
+  border-color: transparent;
+}
+
+button.link {
+  border: none;
+  background: none;
+  padding: 0;
+  margin-top: 1rem;
+  color: #374151;
+}
+
+input {
+  font: inherit;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  width: 100%;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+}
+
+.muted {
+  color: #6b7280;
+}
+
+.small {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.error {
+  color: #dc2626;
+}
+
+.success {
+  color: #15803d;
+}
+
+.center {
+  text-align: center;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.6rem;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.logo span {
+  color: #2563eb;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.topbar nav {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.topbar nav button {
+  border: none;
+  background: none;
+}
+
+.topbar nav button.active {
+  color: #2563eb;
+  border-bottom: 2px solid #2563eb;
+  border-radius: 0;
+}
+
+.chip {
+  display: inline-block;
+  background: #eff6ff;
+  color: #1e3a8a;
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  margin: 0.25rem 0.4rem 0 0;
+  font-size: 0.85rem;
+}
+
+/* Sign in */
+.sign-in {
+  max-width: 24rem;
+  margin: 4rem auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.sign-in form {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.5rem 0 1rem;
+}
+
+/* Feed */
+.story-card {
+  display: grid;
+  grid-template-columns: 14rem 1fr;
+  gap: 1rem;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+}
+
+.story-card:hover {
+  border-color: #93c5fd;
+}
+
+.story-card img,
+.story-top img {
+  width: 100%;
+  border-radius: 0.5rem;
+  object-fit: cover;
+  background: #e5e7eb;
+}
+
+.story-card img {
+  height: 9rem;
+}
+
+.story-card h2 {
+  margin: 0.25rem 0;
+  font-size: 1.2rem;
+}
+
+.summary {
+  margin: 0.25rem 0 0.5rem;
+  color: #374151;
+}
+
+/* Expanded story */
+.story-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+
+.story-top h1 {
+  margin-top: 0.25rem;
+}
+
+.sources {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 0.75rem;
+}
+
+.sources a {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.9rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.sources a:hover {
+  border-color: #93c5fd;
+}
+
+/* Interests */
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+th {
+  background: #f3f4f6;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.counter span {
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+/* Add topic */
+.search {
+  margin: 0.5rem 0 1rem;
+}
+
+.topic-list {
+  list-style: none;
+  padding: 0;
+}
+
+.topic-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.25rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.topic-list li button {
+  color: #2563eb;
+}
+
+/* Phones */
+@media (max-width: 640px) {
+  .story-card,
+  .story-top {
+    grid-template-columns: 1fr;
+  }
+}

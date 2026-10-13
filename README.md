@@ -5,3 +5,4 @@ CatchUp is a personalized news app that helps readers stay informed about the sp
 ## Deliverables
 
 - [P1: Design](design.md)
+- [P2: MVP — user journey and design notes](mvp.md)
