@@ -1,5 +1,11 @@
 # CatchUp MVP
 
+## Demo Video
+
+[Watch the walkthrough (Google Drive)](https://drive.google.com/file/d/1BxoQzg0wxPSOeYdm3D8m4JX9iKAUXAIu/view?usp=sharing)
+
+The video follows the user journey below: registering, opening a story, watching the feed rerank, and editing interests.
+
 ## User Journey
 
 Alex, an MIT student who follows FC Barcelona and U.S. OPT employment rules, registers for CatchUp and lands on **Your Feed**. Every story there is one event reported by several outlets, shown with a single headline, a short summary, and its topics. Alex opens the story about Barcelona beating Napoli. The **expanded story** shows the full summary and links to BBC Sport, ESPN, and Marca, and opening it records the story as read, which quietly raises Alex's count for `FC Barcelona matches` and `Champions League`. Back on the feed, that story is gone and the other Barcelona stories have moved up. Alex then opens **My Interests**, sees the topics CatchUp has learned from his reading, and uses the minus button to lower `Champions League`. On **Search Topics** he types "opt" and adds `OPT employment rules`. When he returns to the feed, the OPT rule-change stories are near the top and the stories he already read are not shown, so he catches up on what he cares about without scrolling past unrelated or repeated news.
