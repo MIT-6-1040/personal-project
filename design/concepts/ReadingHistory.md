@@ -6,11 +6,15 @@ Remembers which stories a user has already read and prevents repeatedly showing 
 
 ## Principle
 
-After recording that a user read a story, that story is part of the user's reading history.
+Each story is recorded the first time the user reads it, and the stories in their
+history are the ones left out of what they are shown next, so the same news does not
+come back after it has been read.
 
-For example, Alex reads the Barcelona story and it is recorded. After that, the Barcelona story is
-in Alex's history, and recording it again is refused. Stories Alex has not read are not
-in his history.
+For example, Alex opens the story about Barcelona beating Napoli, which counts as reading
+it, so it is recorded with the time he read it. When Alex's feed is ranked again, the
+stories he has read are excluded, so the Barcelona story is gone while the Sevilla story
+he has not read is still there. Opening the Barcelona story again from his history
+records nothing new, since recording a story twice is refused.
 
 ## Types
 
@@ -56,4 +60,7 @@ _hasRead (user: User, story: Story) : one (read: Flag)
 
 _readStories (user: User) : one (stories: StoryList)
   Answers every story the user has read in one list, most recent first, empty when there are none.
+
+_readings (user: User, offset: Number, limit: Number) : many (story: Story, readAt: DateTime)
+  Answers at most limit of the stories the user has read, with when they read each one, most recent first and skipping the first offset. No rows past the end, for a limit below 1, or when there are none.
 ```

@@ -6,9 +6,14 @@ Keep a person signed in for a while without sending their password on every requ
 
 ## Principle
 
-A session is started for Alex. Until it expires, `current` resolves the session to
-Alex. After the session is ended, `current` is refused, and the same happens for a
-made-up or expired session.
+Signing in once starts a session that stands for the person for seven days, so every
+later request proves who they are with the session instead of the password, and the
+session stops working as soon as it is ended or expires.
+
+For example, Alex signs in and a session is started for him. For the next week, each
+request carrying that session resolves to Alex without asking for his password. When he
+signs out, the session is ended, and a request with it is refused as not signed in, the
+same as a made-up session or one more than seven days old.
 
 ## Types
 

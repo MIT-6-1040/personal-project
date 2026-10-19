@@ -20,6 +20,8 @@ Defined in [Authenticating](../design/concepts/Authenticating.md), line 1.
   - Refuses `USERNAME_TAKEN`: That username is already taken.
 - `authenticate(username: String, password: String) : returns (account: Account)`
   - Refuses `INVALID_CREDENTIALS`: The username or password is incorrect.
+- `connect(person: String, username: String) : returns (account: Account)`
+  - Refuses `INVALID_PERSON`: That Commons account could not be read.
 
 #### Queries
 
@@ -28,6 +30,25 @@ Defined in [Authenticating](../design/concepts/Authenticating.md), line 1.
 #### Instances
 
 - `Authenticating` — instance of `Authenticating` — [CatchUp application types](../design/types.md), line 15.
+
+### CommonsConnecting
+
+Defined in [CommonsConnecting](../design/concepts/CommonsConnecting.md), line 1.
+
+#### Actions
+
+- `begin() : returns (attempt: Attempt, url: String, expiresAt: DateTime)`
+- `complete(attempt: Attempt, state: String, code: String) : returns (person: String, username: String, displayName: String, email: String)`
+  - Refuses `UNKNOWN_ATTEMPT`: This sign-in has expired. Please try again.
+  - Refuses `COMMONS_REFUSED`: Commons could not confirm this sign-in. Please try again.
+
+#### Queries
+
+- `_pending(attempt: Attempt) : optional (expiresAt: DateTime)`
+
+#### Instances
+
+- `CommonsConnecting` — instance of `CommonsConnecting` — [CatchUp application types](../design/types.md), line 17.
 
 ### FeedCurating
 
@@ -40,12 +61,13 @@ Defined in [FeedCurating](../design/concepts/FeedCurating.md), line 1.
 #### Queries
 
 - `_feed(user: User) : many (story: Story, score: Number)`
+- `_page(user: User, offset: Number, limit: Number) : many (story: Story, score: Number)`
 
 #### Instances
 
-- `FeedCurating` — instance of `FeedCurating` — [CatchUp application types](../design/types.md), line 31.
-  - `Story` is `StoryGrouping.Story` — [CatchUp application types](../design/types.md), line 33.
-  - `User` is `Authenticating.Account` — [CatchUp application types](../design/types.md), line 32.
+- `FeedCurating` — instance of `FeedCurating` — [CatchUp application types](../design/types.md), line 33.
+  - `Story` is `StoryGrouping.Story` — [CatchUp application types](../design/types.md), line 35.
+  - `User` is `Authenticating.Account` — [CatchUp application types](../design/types.md), line 34.
 
 ### InterestTracking
 
@@ -72,9 +94,9 @@ Defined in [InterestTracking](../design/concepts/InterestTracking.md), line 1.
 
 #### Instances
 
-- `InterestTracking` — instance of `InterestTracking` — [CatchUp application types](../design/types.md), line 23.
-  - `Topic` is `TopicName` — [CatchUp application types](../design/types.md), line 25.
-  - `User` is `Authenticating.Account` — [CatchUp application types](../design/types.md), line 24.
+- `InterestTracking` — instance of `InterestTracking` — [CatchUp application types](../design/types.md), line 25.
+  - `Topic` is `TopicName` — [CatchUp application types](../design/types.md), line 27.
+  - `User` is `Authenticating.Account` — [CatchUp application types](../design/types.md), line 26.
 
 ### ReadingHistory
 
@@ -89,12 +111,13 @@ Defined in [ReadingHistory](../design/concepts/ReadingHistory.md), line 1.
 
 - `_hasRead(user: User, story: Story) : one (read: Flag)`
 - `_readStories(user: User) : one (stories: StoryList)`
+- `_readings(user: User, offset: Number, limit: Number) : many (story: Story, readAt: DateTime)`
 
 #### Instances
 
-- `ReadingHistory` — instance of `ReadingHistory` — [CatchUp application types](../design/types.md), line 27.
-  - `Story` is `StoryGrouping.Story` — [CatchUp application types](../design/types.md), line 29.
-  - `User` is `Authenticating.Account` — [CatchUp application types](../design/types.md), line 28.
+- `ReadingHistory` — instance of `ReadingHistory` — [CatchUp application types](../design/types.md), line 29.
+  - `Story` is `StoryGrouping.Story` — [CatchUp application types](../design/types.md), line 31.
+  - `User` is `Authenticating.Account` — [CatchUp application types](../design/types.md), line 30.
 
 ### Sessioning
 
@@ -114,8 +137,8 @@ Defined in [Sessioning](../design/concepts/Sessioning.md), line 1.
 
 #### Instances
 
-- `Sessioning` — instance of `Sessioning` — [CatchUp application types](../design/types.md), line 17.
-  - `Subject` is `Authenticating.Account` — [CatchUp application types](../design/types.md), line 18.
+- `Sessioning` — instance of `Sessioning` — [CatchUp application types](../design/types.md), line 19.
+  - `Subject` is `Authenticating.Account` — [CatchUp application types](../design/types.md), line 20.
 
 ### StoryGrouping
 
@@ -124,21 +147,30 @@ Defined in [StoryGrouping](../design/concepts/StoryGrouping.md), line 1.
 #### Actions
 
 - `addArticle(key: String, headline: String, summary: String, image: String, topics: TopicList, source: String, title: String, url: String, publishedAt: DateTime) : returns (article: Article, story: Story)`
+  - Refuses `INVALID_HEADLINE`: A headline must have 1 to 100 characters.
+  - Refuses `INVALID_SUMMARY`: A summary must have 1 to 400 characters and at most 60 words.
+  - Refuses `INVALID_TOPICS`: A story needs 1 to 5 topics of 1 to 100 characters each.
   - Refuses `DUPLICATE_ARTICLE`: That article has already been added.
+- `revise(story: Story, summary: String, topics: TopicList) : returns (story: Story)`
+  - Refuses `STORY_NOT_FOUND`: That story does not exist.
+  - Refuses `INVALID_SUMMARY`: A summary must have 1 to 400 characters and at most 60 words.
+  - Refuses `INVALID_TOPICS`: A story needs 1 to 5 topics of 1 to 100 characters each.
 
 #### Queries
 
-- `_stories() : many (story: Story, headline: String, summary: String, image: String, publishedAt: DateTime)`
+- `_stories() : many (story: Story, key: String, headline: String, summary: String, image: String, publishedAt: DateTime)`
 - `_get(story: Story) : optional (headline: String, summary: String, image: String, publishedAt: DateTime)`
 - `_articles(story: Story) : many (article: Article, source: String, title: String, url: String, publishedAt: DateTime)`
+- `_hasArticle(url: String) : one (added: Flag)`
 - `_topics(story: Story) : many (topic: Topic)`
 - `_allTopics() : many (topic: Topic)`
-- `_catalog() : one (catalog: Catalog)`
+- `_sources() : many (source: String)`
+- `_catalog(search: String, source: String) : one (catalog: Catalog)`
 
 #### Instances
 
-- `StoryGrouping` — instance of `StoryGrouping` — [CatchUp application types](../design/types.md), line 20.
-  - `Topic` is `TopicName` — [CatchUp application types](../design/types.md), line 21.
+- `StoryGrouping` — instance of `StoryGrouping` — [CatchUp application types](../design/types.md), line 22.
+  - `Topic` is `TopicName` — [CatchUp application types](../design/types.md), line 23.
 
 ## Application types
 
@@ -150,6 +182,16 @@ Concrete types:
 
 _Formers name result shapes evaluated when asked. The source former owns_
 _the authored explanation; this section records the generated shape._
+
+### every known source
+
+Authored path: `Feed.Sources.KnownSources`.
+- Covered by [Feed](../design/compositions/Feed.md), line 34.
+
+```former
+Former "every known source" — inputs (); bindings (source); promises exactly one record — forms:
+  the distinct source of each StoryGrouping._sources () has (source)
+```
 
 ### every known topic
 
@@ -198,20 +240,39 @@ Former "the interests of (user)" — inputs (user); bindings (topic, count); pro
       topic
 ```
 
-### the personal feed of (user)
+### the personal feed of (user) from (offset)
 
 Authored path: `Feed.Viewing.PersonalFeed`.
 - Covered by [Feed](../design/compositions/Feed.md), line 6.
 
 ```former
-Former "the personal feed of (user)" — inputs (user); bindings (story, score, headline, summary, image, publishedAt, topic); promises exactly one record — forms:
-  each FeedCurating._feed (user) has (score, story)
+Former "the personal feed of (user) from (offset)" — inputs (user, offset); bindings (story, score, headline, summary, image, publishedAt, topic); promises exactly one record — forms:
+  each FeedCurating._page (limit: 10, offset, user) has (score, story)
     where StoryGrouping._get (story) has (headline, image, publishedAt, summary)
     form a record of
       headline
       image
       publishedAt
       score
+      story
+      summary
+      topics: the distinct topic of each StoryGrouping._topics (story) has (topic)
+```
+
+### the reading history of (user) from (offset)
+
+Authored path: `History.Viewing.ReadingList`.
+- Covered by [History](../design/compositions/History.md), line 5.
+
+```former
+Former "the reading history of (user) from (offset)" — inputs (user, offset); bindings (story, readAt, headline, summary, image, publishedAt, topic); promises exactly one record — forms:
+  each ReadingHistory._readings (limit: 10, offset, user) has (readAt, story)
+    where StoryGrouping._get (story) has (headline, image, publishedAt, summary)
+    form a record of
+      headline
+      image
+      publishedAt
+      readAt
       story
       summary
       topics: the distinct topic of each StoryGrouping._topics (story) has (topic)
@@ -239,14 +300,66 @@ then
   RequestBoundary.respond (error: message, requestId)
 ```
 
+### Feed.Sources.ListSources
+
+Authored path: `Feed.Sources.ListSources`.
+- Covered by [Feed](../design/compositions/Feed.md), line 33.
+- Covered by [Feed](../design/compositions/Feed.md), line 38.
+
+```reaction
+when RequestBoundary.request (path: "/feed/sources", requestId, session)
+then
+  Sessioning.current (session)
+```
+
+### Feed.Sources.ListSources#2
+
+Authored path: `Feed.Sources.ListSources`.
+- Covered by [Feed](../design/compositions/Feed.md), line 33.
+- Covered by [Feed](../design/compositions/Feed.md), line 38.
+
+```reaction
+when Sessioning.current (session, subject: user), asked by Feed.Sources.ListSources
+where
+  earlier, RequestBoundary.request (path: "/feed/sources", requestId, session)
+then
+  RequestBoundary.respond (requestId, sources: former "every known source")
+```
+
+### Feed.Viewing.MoreFeed
+
+Authored path: `Feed.Viewing.MoreFeed`.
+- Covered by [Feed](../design/compositions/Feed.md), line 24.
+- Covered by [Feed](../design/compositions/Feed.md), line 30.
+
+```reaction
+when RequestBoundary.request (offset, path: "/feed/more", requestId, session)
+then
+  Sessioning.current (session)
+```
+
+### Feed.Viewing.MoreFeed#2
+
+Authored path: `Feed.Viewing.MoreFeed`.
+- Covered by [Feed](../design/compositions/Feed.md), line 24.
+- Covered by [Feed](../design/compositions/Feed.md), line 30.
+
+```reaction
+when Sessioning.current (session, subject: user), asked by Feed.Viewing.MoreFeed
+where
+  earlier, RequestBoundary.request (offset, path: "/feed/more", requestId, session)
+then
+  RequestBoundary.respond (feed: former "the personal feed of (user) from (offset)" with (offset, user), requestId)
+```
+
 ### Feed.Viewing.ViewFeed
 
 Authored path: `Feed.Viewing.ViewFeed`.
 - Covered by [Feed](../design/compositions/Feed.md), line 3.
-- Covered by [Feed](../design/compositions/Feed.md), line 13.
+- Covered by [Feed](../design/compositions/Feed.md), line 20.
 
 ```reaction
-when RequestBoundary.request (path: "/feed", requestId, session)
+when RequestBoundary.request (path: "/feed", requestId, search, session, source)
 then
   Sessioning.current (session)
 ```
@@ -255,14 +368,15 @@ then
 
 Authored path: `Feed.Viewing.ViewFeed`.
 - Covered by [Feed](../design/compositions/Feed.md), line 3.
-- Covered by [Feed](../design/compositions/Feed.md), line 13.
+- Covered by [Feed](../design/compositions/Feed.md), line 20.
 
 ```reaction
 when Sessioning.current (session, subject: user), asked by Feed.Viewing.ViewFeed
 where
-  StoryGrouping._catalog () has (catalog)
   InterestTracking._profile (user) has (profile)
   ReadingHistory._readStories (user) has (stories: read)
+  earlier, RequestBoundary.request (path: "/feed", requestId, search, session, source)
+  StoryGrouping._catalog (search, source) has (catalog)
 then
   FeedCurating.generate (candidates: catalog, excluded: read, user, weights: profile)
 ```
@@ -271,14 +385,40 @@ then
 
 Authored path: `Feed.Viewing.ViewFeed`.
 - Covered by [Feed](../design/compositions/Feed.md), line 3.
-- Covered by [Feed](../design/compositions/Feed.md), line 13.
+- Covered by [Feed](../design/compositions/Feed.md), line 20.
 
 ```reaction
 when FeedCurating.generate (candidates: catalog, excluded: read, user, weights: profile), asked by Feed.Viewing.ViewFeed#2
 where
-  earlier, RequestBoundary.request (path: "/feed", requestId, session)
+  earlier, RequestBoundary.request (path: "/feed", requestId, search, session, source)
 then
-  RequestBoundary.respond (feed: former "the personal feed of (user)" with (user), requestId)
+  RequestBoundary.respond (feed: former "the personal feed of (user) from (offset)" with (offset: 0, user), requestId)
+```
+
+### History.Viewing.ViewHistory
+
+Authored path: `History.Viewing.ViewHistory`.
+- Covered by [History](../design/compositions/History.md), line 4.
+- Covered by [History](../design/compositions/History.md), line 19.
+
+```reaction
+when RequestBoundary.request (offset, path: "/history", requestId, session)
+then
+  Sessioning.current (session)
+```
+
+### History.Viewing.ViewHistory#2
+
+Authored path: `History.Viewing.ViewHistory`.
+- Covered by [History](../design/compositions/History.md), line 4.
+- Covered by [History](../design/compositions/History.md), line 19.
+
+```reaction
+when Sessioning.current (session, subject: user), asked by History.Viewing.ViewHistory
+where
+  earlier, RequestBoundary.request (offset, path: "/history", requestId, session)
+then
+  RequestBoundary.respond (history: former "the reading history of (user) from (offset)" with (offset, user), requestId)
 ```
 
 ### Interests.Changing.AddInterest
@@ -465,11 +605,88 @@ then
   RequestBoundary.respond (interests: former "the interests of (user)" with (user), requestId)
 ```
 
+### Sessions.Commons.FinishCommons
+
+Authored path: `Sessions.Commons.FinishCommons`.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 19.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 30.
+
+```reaction
+when RequestBoundary.request (attempt, code, path: "/auth/commons/finish", requestId, state)
+then
+  CommonsConnecting.complete (attempt, code, state)
+```
+
+### Sessions.Commons.FinishCommons#2
+
+Authored path: `Sessions.Commons.FinishCommons`.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 19.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 30.
+
+```reaction
+when CommonsConnecting.complete (attempt, code, state, person, username: commonsName), asked by Sessions.Commons.FinishCommons
+then
+  Authenticating.connect (person, username: commonsName)
+```
+
+### Sessions.Commons.FinishCommons#3
+
+Authored path: `Sessions.Commons.FinishCommons`.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 19.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 30.
+
+```reaction
+when Authenticating.connect (person, username: commonsName, account), asked by Sessions.Commons.FinishCommons#2
+then
+  Sessioning.start (subject: account)
+```
+
+### Sessions.Commons.FinishCommons#4
+
+Authored path: `Sessions.Commons.FinishCommons`.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 19.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 30.
+
+```reaction
+when Sessioning.start (subject: account, expiresAt, session), asked by Sessions.Commons.FinishCommons#3
+where
+  Authenticating._username (account) has (username)
+  earlier, RequestBoundary.request (attempt, code, path: "/auth/commons/finish", requestId, state)
+then
+  RequestBoundary.respond (expiresAt, requestId, session, username)
+```
+
+### Sessions.Commons.StartCommons
+
+Authored path: `Sessions.Commons.StartCommons`.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 14.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 29.
+
+```reaction
+when RequestBoundary.request (path: "/auth/commons/start", requestId)
+then
+  CommonsConnecting.begin ()
+```
+
+### Sessions.Commons.StartCommons#2
+
+Authored path: `Sessions.Commons.StartCommons`.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 14.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 29.
+
+```reaction
+when CommonsConnecting.begin (attempt, expiresAt, url), asked by Sessions.Commons.StartCommons
+where
+  earlier, RequestBoundary.request (path: "/auth/commons/start", requestId)
+then
+  RequestBoundary.respond (attempt, attemptExpiresAt: expiresAt, requestId, url)
+```
+
 ### Sessions.Current.Me
 
 Authored path: `Sessions.Current.Me`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 13.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 18.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 33.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 38.
 
 ```reaction
 when RequestBoundary.request (path: "/auth/me", requestId, session)
@@ -480,8 +697,8 @@ then
 ### Sessions.Current.Me#2
 
 Authored path: `Sessions.Current.Me`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 13.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 18.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 33.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 38.
 
 ```reaction
 when Sessioning.current (session, subject: account), asked by Sessions.Current.Me
@@ -573,8 +790,8 @@ then
 ### Sessions.Leaving.SignOut
 
 Authored path: `Sessions.Leaving.SignOut`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 15.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 19.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 35.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 39.
 
 ```reaction
 when RequestBoundary.request (path: "/auth/sign-out", requestId, session)
@@ -585,8 +802,8 @@ then
 ### Sessions.Leaving.SignOut#2
 
 Authored path: `Sessions.Leaving.SignOut`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 15.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 19.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 35.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 39.
 
 ```reaction
 when Sessioning.end (session, ended: signedOut), asked by Sessions.Leaving.SignOut
@@ -715,11 +932,15 @@ object or lacks a required key. The response uses `INVALID_INPUT` and names
 the path or missing key. A declared default fills an absent key. Endpoints
 not listed here have no explicit input contract.
 
+- `/auth/commons/finish` — requires `attempt`, `state`, `code`
 - `/auth/me` — requires `session`
 - `/auth/register` — requires `username`, `password`
 - `/auth/sign-in` — requires `username`, `password`
 - `/auth/sign-out` — requires `session`
-- `/feed` — requires `session`
+- `/feed` — requires `session`; fills `search` with "" when absent; fills `source` with "" when absent
+- `/feed/more` — requires `session`, `offset`
+- `/feed/sources` — requires `session`
+- `/history` — requires `session`; fills `offset` with 0 when absent
 - `/interests/add` — requires `session`, `topic`, `count`
 - `/interests/list` — requires `session`
 - `/interests/remove` — requires `session`, `topic`

@@ -55,4 +55,16 @@ export class FeedCuratingConcept {
     const rows = await this.entries.find({ user }).sort({ position: 1 }).toArray();
     return rows.map(({ story, score }) => ({ story, score }));
   }
+
+  // One page of the saved feed, so scrolling further doesn't rerank what's already shown.
+  async _page({ user, offset, limit }: { user: string; offset: number; limit: number }) {
+    // Mongo treats limit(0) as "no limit", so an empty page has to be handled here.
+    if (limit < 1) return [];
+    const rows = await this.entries
+      .find({ user, position: { $gte: offset } })
+      .sort({ position: 1 })
+      .limit(limit)
+      .toArray();
+    return rows.map(({ story, score }) => ({ story, score }));
+  }
 }

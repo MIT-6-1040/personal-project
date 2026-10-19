@@ -65,8 +65,31 @@ test("a different key makes a new story, and stories list newest first", async (
     "Climate change",
     "FC Barcelona matches",
   ]);
-  const { catalog } = await grouping._catalog({});
+  const { catalog } = await grouping._catalog({ search: "", source: "" });
   expect(catalog.find((c) => c.story === climate.story)?.topics).toEqual(["Climate change"]);
+});
+
+test("the catalog can be narrowed by search words and by source", async () => {
+  const sun = await grouping.addArticle({
+    key: "solar-record",
+    headline: "Solar power sets a record",
+    summary: "Panels in Spain produced more power than ever (a new high).",
+    image: "",
+    topics: ["Energy"],
+    source: "The Guardian",
+    title: "Solar record",
+    url: "https://guardian.example/solar",
+    publishedAt: new Date("2026-10-12T09:00:00Z"),
+  });
+  const stories = async (search: string, source: string) =>
+    (await grouping._catalog({ search, source })).catalog.map((c) => c.story);
+  expect(await stories("SOLAR", "")).toEqual([sun.story]);
+  expect(await stories("spain record", "")).toEqual([sun.story]);
+  expect(await stories("spain barcelona", "")).toEqual([]);
+  expect(await stories("(a new", "")).toEqual([sun.story]);
+  expect(await stories("", "The Guardian")).toEqual([sun.story]);
+  expect(await stories("solar", "BBC")).toEqual([]);
+  expect((await grouping._sources({})).map((s) => s.source)).toContain("The Guardian");
 });
 
 test("an unknown story has no rows", async () => {

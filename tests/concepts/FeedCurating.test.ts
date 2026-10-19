@@ -30,6 +30,22 @@ test("principle: stories matching the user's interests come first, read ones are
   ]);
 });
 
+test("the feed comes in pages in ranked order", async () => {
+  await feeds.generate({ user: "kim", candidates, weights: [{ topic: "FC Barcelona matches", count: 1 }], excluded: [] });
+  // barca and old-barca score 1, then cars and climate score 0, newest first within a score.
+  expect(await feeds._page({ user: "kim", offset: 0, limit: 2 })).toEqual([
+    { story: "barca", score: 1 },
+    { story: "old-barca", score: 1 },
+  ]);
+  expect(await feeds._page({ user: "kim", offset: 2, limit: 2 })).toEqual([
+    { story: "cars", score: 0 },
+    { story: "climate", score: 0 },
+  ]);
+  expect(await feeds._page({ user: "kim", offset: 4, limit: 2 })).toEqual([]);
+  expect(await feeds._page({ user: "kim", offset: 0, limit: 0 })).toEqual([]);
+  expect(await feeds._page({ user: "nobody", offset: 0, limit: 10 })).toEqual([]);
+});
+
 test("generating again replaces the old feed", async () => {
   await feeds.generate({ user: "sam", candidates, weights: [], excluded: [] });
   await feeds.generate({ user: "sam", candidates, weights: [{ topic: "Climate change", count: 1 }], excluded: ["cars", "barca", "old-barca"] });

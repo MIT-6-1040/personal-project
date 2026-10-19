@@ -2,6 +2,7 @@ import { expect, test } from "bun:test";
 import {
   AuthenticatingConcept,
   InvalidCredentials,
+  InvalidPerson,
   InvalidUsername,
   UsernameTaken,
   WeakPassword,
@@ -16,6 +17,30 @@ test("principle: register, then only the right password signs in", async () => {
   await expect(auth.authenticate({ username: "alex", password: "wrong-pass" })).rejects.toThrow(InvalidCredentials);
   expect(await auth.authenticate({ username: "alex", password: "barca2026" })).toEqual({ account });
   expect(await auth._username({ account })).toEqual([{ username: "alex" }]);
+});
+
+test("a Commons person always gets the same account, which has no password", async () => {
+  const { account } = await auth.connect({ person: "commons-sam", username: "sam_k" });
+  expect(await auth._username({ account })).toEqual([{ username: "sam_k" }]);
+  expect(await auth.connect({ person: "commons-sam", username: "renamed" })).toEqual({ account });
+  // Nobody can sign in to a Commons account with a password, not even an empty one.
+  await expect(auth.authenticate({ username: "sam_k", password: "" })).rejects.toThrow(InvalidCredentials);
+  await expect(auth.authenticate({ username: "sam_k", password: "anything123" })).rejects.toThrow(InvalidCredentials);
+});
+
+test("a Commons username that is taken or doesn't fit gets a usable one", async () => {
+  // "alex" already belongs to the password account from the first test.
+  const taken = await auth.connect({ person: "commons-alex", username: "alex" });
+  expect(await auth._username(taken)).toEqual([{ username: "alex-2" }]);
+  const odd = await auth.connect({ person: "commons-odd", username: "j.doe@mit" });
+  expect(await auth._username(odd)).toEqual([{ username: "j-doe-mit" }]);
+  // The password account named alex is untouched.
+  await expect(auth.authenticate({ username: "alex", password: "barca2026" })).resolves.toBeDefined();
+});
+
+test("a blank Commons person is refused and makes no account", async () => {
+  await expect(auth.connect({ person: " ", username: "ghost" })).rejects.toThrow(InvalidPerson);
+  await expect(auth.register({ username: "ghost", password: "longenough" })).resolves.toBeDefined();
 });
 
 test("bad usernames and short passwords are refused", async () => {

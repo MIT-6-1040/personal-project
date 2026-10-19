@@ -6,12 +6,16 @@ Provides each user with stories that are most relevant to them and prevents user
 
 ## Principle
 
-When a feed is generated for a user, relevant unread stories are ranked higher based on the user's interests.
+Every story the user should still see is scored by how much its topics count for them,
+and the feed lists the highest scores first, so the most relevant news is at the top and
+the user can stop scrolling as soon as the stories stop mattering to them.
 
-For example, there are two unread stories, one about FC Barcelona matches and one about climate
-change, and Alex has FC Barcelona matches with a count of 8. When Alex's feed is
-generated, the Barcelona story comes first. A story Alex has already read is left out
-of the feed.
+For example, there are three stories: one about FC Barcelona matches, one about climate
+change, and one about Barcelona that Alex has already read. Alex has FC Barcelona matches
+with a count of 8. When his feed is generated, the read story is excluded, the unread
+Barcelona story scores 8 and comes first, and the climate story scores 0 and comes after
+it. The feed is saved, so Alex can page through it ten stories at a time in the same
+order until it is generated again.
 
 ## Types
 
@@ -60,4 +64,7 @@ generate (user: User, candidates: Candidates, weights: Weights, excluded: Exclud
 ```queries
 _feed (user: User) : many (story: Story, score: Number)
   Answers the user's last generated feed in ranked order, and no rows before one is generated.
+
+_page (user: User, offset: Number, limit: Number) : many (story: Story, score: Number)
+  Answers at most limit entries of the user's last generated feed, starting at position offset, in ranked order. No rows past the end, for a limit below 1, or before a feed is generated.
 ```

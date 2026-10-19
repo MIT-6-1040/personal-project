@@ -2,14 +2,21 @@
 
 ## Purpose
 
-Let a person prove who they are with a username and password, so nobody can act as
-someone else just by typing their name.
+Let a person prove who they are, either with a username and password or with their
+Commons account, so nobody can act as someone else just by typing their name.
 
 ## Principle
 
-Alex registers the username `alex` with a password. Another registration of `alex` is
-refused. Signing in as `alex` with the wrong password is refused, and signing in with
-the right password returns Alex's account.
+Each account can only be reached by proving something only its owner has: the password
+it was registered with, or the Commons identity it is linked to.
+
+For example, Alex registers the username `alex` with a password. Another registration of
+`alex` is refused. Signing in as `alex` with the wrong password is refused, and signing
+in with the right password returns Alex's account. Sam has a Commons account instead, so
+connecting Sam's Commons identity creates an account for Sam with no password, named
+after their Commons username. Connecting the same Commons identity again returns that
+same account, so Sam keeps their interests and history, and nobody can sign in to it
+with a password.
 
 ## Types
 
@@ -23,8 +30,11 @@ opaque Secret
 ```state
 a set of Accounts with
   a unique username String
-  a salt String
-  a passwordHash Secret
+  an optional salt String
+  an optional passwordHash Secret
+  an optional unique commonsPerson String
+
+Rule: an account has a passwordHash, a commonsPerson, or both.
 ```
 
 ## Actions
@@ -46,11 +56,23 @@ register (username: String, password: String) : returns (account: Account)
     returns account
 
 authenticate (username: String, password: String) : returns (account: Account)
-  where username is unknown or password does not match
+  where username is unknown, the account has no password, or password does not match
   then
     refuses INVALID_CREDENTIALS "The username or password is incorrect."
   where password matches
   then
+    returns account
+
+connect (person: String, username: String) : returns (account: Account)
+  where person is blank
+  then
+    refuses INVALID_PERSON "That Commons account could not be read."
+  where an account is linked to person
+  then
+    returns account
+  where no account is linked to person
+  then
+    add a new account linked to person with no password, named username made valid and unused by adding a number if needed
     returns account
 ```
 

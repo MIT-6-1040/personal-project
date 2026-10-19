@@ -14,6 +14,7 @@ export default {
       new URL("./design/compositions/Stories.md", import.meta.url),
       new URL("./design/compositions/Interests.md", import.meta.url),
       new URL("./design/compositions/Feed.md", import.meta.url),
+      new URL("./design/compositions/History.md", import.meta.url),
     ],
   },
   projections: [httpWire({ policy, name: "CatchUpWireHttp" })],

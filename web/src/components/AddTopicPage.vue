@@ -9,11 +9,13 @@ const mine = ref<string[]>([]);
 const search = ref("");
 const error = ref("");
 const added = ref("");
+const loading = ref(true);
 
 onMounted(async () => {
   const [known, interests] = await Promise.all([api.topics.list({}), api.interests.list({})]);
   if (!("error" in known)) topics.value = known.topics;
   if (!("error" in interests)) mine.value = interests.interests.map((i) => i.topic);
+  loading.value = false;
 });
 
 const matches = computed(() => {
@@ -44,13 +46,27 @@ async function add(topic: string) {
 </script>
 
 <template>
-  <button class="link" @click="$emit('done')">← Back to My Interests</button>
-  <h1>Search Topics</h1>
-  <input v-model="search" class="search" placeholder="Search topics, like opt" autofocus />
+  <button class="link" @click="$emit('done')">← Back to interests</button>
+  <h1 class="page-title">Search Topics</h1>
+  <div class="search">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+    <input v-model="search" type="search" placeholder="Search topics, like opt" aria-label="Search topics" autofocus />
+  </div>
   <p v-if="error" class="error">{{ error }}</p>
   <p v-if="added" class="success">{{ added }}</p>
 
-  <ul class="topic-list">
+  <ul v-if="loading" class="topic-list" aria-busy="true">
+    <li class="visually-hidden">Loading topics</li>
+    <li v-for="n in 6" :key="n" aria-hidden="true">
+      <div class="skeleton skeleton-line" :style="{ width: `${(n % 3) * 3 + 8}rem` }"></div>
+      <div class="skeleton skeleton-line" style="width: 2rem"></div>
+    </li>
+  </ul>
+
+  <ul v-else class="topic-list">
     <li v-if="canAddTyped">
       <span>Add "{{ search.trim() }}" as a new topic</span>
       <button @click="add(search.trim())">+</button>

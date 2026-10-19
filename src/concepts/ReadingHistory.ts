@@ -39,4 +39,16 @@ export class ReadingHistoryConcept {
     const rows = await this.readings.find({ user }).sort({ readAt: -1 }).toArray();
     return { stories: rows.map((row) => row.story) };
   }
+
+  async _readings({ user, offset, limit }: { user: string; offset: number; limit: number }) {
+    if (limit < 1) return [];
+    // The _id tiebreak keeps pages stable when two readings share a time.
+    const rows = await this.readings
+      .find({ user })
+      .sort({ readAt: -1, _id: 1 })
+      .skip(offset)
+      .limit(limit)
+      .toArray();
+    return rows.map((row) => ({ story: row.story, readAt: row.readAt }));
+  }
 }

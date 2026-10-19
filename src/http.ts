@@ -2,7 +2,7 @@ import { httpPolicy } from "@mit-sdg/sync-engine-http/policy";
 
 // The address the browser uses. The frontend passes /api requests on to the
 // backend, so this is the frontend's address.
-const publicOrigin = process.env.PUBLIC_ORIGIN ?? "http://127.0.0.1:5173";
+export const publicOrigin = process.env.PUBLIC_ORIGIN ?? "http://127.0.0.1:5173";
 
 export const policy = httpPolicy({
   publicOrigin,
@@ -19,6 +19,9 @@ export const policy = httpPolicy({
     TOPIC_ALREADY_ADDED: "CONFLICT",
     TOPIC_NOT_FOUND: "NOT_FOUND",
     STORY_NOT_FOUND: "NOT_FOUND",
+    UNKNOWN_ATTEMPT: "UNAUTHORIZED",
+    COMMONS_REFUSED: "UNAUTHORIZED",
+    INVALID_PERSON: "UNAUTHORIZED",
   },
   // The session lives in a cookie: set when signing in, cleared when signing out.
   cookies: {
@@ -28,8 +31,17 @@ export const policy = httpPolicy({
       issue: [
         { path: "/auth/register", value: "session", expires: "expiresAt" },
         { path: "/auth/sign-in", value: "session", expires: "expiresAt" },
+        { path: "/auth/commons/finish", value: "session", expires: "expiresAt" },
       ],
       clear: ["/auth/sign-out"],
+    },
+    // Ties a Commons sign-in to the browser that started it, so a code sent to
+    // someone else's browser can't sign them in to the wrong account.
+    commonsAttempt: {
+      name: "catchup-commons",
+      input: "attempt",
+      issue: [{ path: "/auth/commons/start", value: "attempt", expires: "attemptExpiresAt" }],
+      clear: ["/auth/commons/finish"],
     },
   },
 });

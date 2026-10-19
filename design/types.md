@@ -14,6 +14,8 @@ concrete TopicName
 ```instances
 instantiate Authenticating
 
+instantiate CommonsConnecting
+
 instantiate Sessioning with
   Subject is Authenticating.Account
 

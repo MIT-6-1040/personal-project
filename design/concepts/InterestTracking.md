@@ -6,12 +6,16 @@ Tracks how strongly a user is interested in different topics and allows interest
 
 ## Principle
 
-After recording interest in a topic for a user, that topic's count reflects the user's interest in it.
+Counts grow on their own from what the user reads, and the user can add, change, or
+remove them at any time, so each count stays an honest measure of how much they care
+about that topic right now and can be used to decide what they see first.
 
-For example, Alex adds OPT employment rules with a count of 3. Each time interest in FC Barcelona
-matches is increased for Alex, its count goes up by one, starting from 1 the first
-time. Alex sets OPT employment rules to 5, then removes FC Barcelona matches, and only
-OPT employment rules is left with a count of 5. After Alex resets, he has no topics.
+For example, Alex adds OPT employment rules with a count of 3 because he wants that news
+before he has read any. Each time he reads a story about FC Barcelona matches, its count
+goes up by one, starting from 1 the first time, without him doing anything. Later he
+raises OPT employment rules to 5 and removes FC Barcelona matches because the season has
+ended, so only OPT employment rules is left with a count of 5. After Alex resets, he has
+no topics, and his interests start growing again from his next read.
 
 ## Types
 

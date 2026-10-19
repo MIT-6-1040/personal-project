@@ -1,5 +1,6 @@
 import { conceptSet, registerConcept } from "@mit-sdg/sync-engine/assembly";
 import authenticatingSpec from "@design/concepts/Authenticating.md" with { type: "text" };
+import commonsConnectingSpec from "@design/concepts/CommonsConnecting.md" with { type: "text" };
 import feedCuratingSpec from "@design/concepts/FeedCurating.md" with { type: "text" };
 import interestTrackingSpec from "@design/concepts/InterestTracking.md" with { type: "text" };
 import readingHistorySpec from "@design/concepts/ReadingHistory.md" with { type: "text" };
@@ -8,10 +9,12 @@ import storyGroupingSpec from "@design/concepts/StoryGrouping.md" with { type: "
 import {
   AuthenticatingConcept,
   InvalidCredentials,
+  InvalidPerson,
   InvalidUsername,
   UsernameTaken,
   WeakPassword,
 } from "./concepts/Authenticating.ts";
+import { CommonsConnectingConcept, CommonsRefused, UnknownAttempt } from "./concepts/CommonsConnecting.ts";
 import { FeedCuratingConcept } from "./concepts/FeedCurating.ts";
 import {
   InterestTrackingConcept,
@@ -22,7 +25,14 @@ import {
 } from "./concepts/InterestTracking.ts";
 import { AlreadyRead, ReadingHistoryConcept } from "./concepts/ReadingHistory.ts";
 import { SessioningConcept, UnknownSession } from "./concepts/Sessioning.ts";
-import { DuplicateArticle, StoryGroupingConcept } from "./concepts/StoryGrouping.ts";
+import {
+  DuplicateArticle,
+  InvalidHeadline,
+  InvalidSummary,
+  InvalidTopics,
+  StoryGroupingConcept,
+  StoryNotFound,
+} from "./concepts/StoryGrouping.ts";
 
 // Each concept is registered with its spec and the error class for each refusal code.
 const authenticating = registerConcept({
@@ -33,7 +43,14 @@ const authenticating = registerConcept({
     WEAK_PASSWORD: WeakPassword,
     USERNAME_TAKEN: UsernameTaken,
     INVALID_CREDENTIALS: InvalidCredentials,
+    INVALID_PERSON: InvalidPerson,
   },
+});
+
+const commonsConnecting = registerConcept({
+  class: CommonsConnectingConcept,
+  spec: commonsConnectingSpec,
+  refusals: { UNKNOWN_ATTEMPT: UnknownAttempt, COMMONS_REFUSED: CommonsRefused },
 });
 
 const sessioning = registerConcept({
@@ -45,7 +62,13 @@ const sessioning = registerConcept({
 const storyGrouping = registerConcept({
   class: StoryGroupingConcept,
   spec: storyGroupingSpec,
-  refusals: { DUPLICATE_ARTICLE: DuplicateArticle },
+  refusals: {
+    DUPLICATE_ARTICLE: DuplicateArticle,
+    INVALID_HEADLINE: InvalidHeadline,
+    INVALID_SUMMARY: InvalidSummary,
+    INVALID_TOPICS: InvalidTopics,
+    STORY_NOT_FOUND: StoryNotFound,
+  },
 });
 
 const interestTracking = registerConcept({
@@ -72,6 +95,7 @@ const feedCurating = registerConcept({
 
 export const applicationConceptSet = conceptSet({
   Authenticating: authenticating,
+  CommonsConnecting: commonsConnecting,
   Sessioning: sessioning,
   StoryGrouping: storyGrouping,
   InterestTracking: interestTracking,

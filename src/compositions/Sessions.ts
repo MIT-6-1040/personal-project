@@ -2,7 +2,7 @@ import { endpoint, receive, respond } from "@mit-sdg/sync-engine/boundary";
 import { where } from "@mit-sdg/sync-engine/language";
 import { concepts } from "../concepts.ts";
 
-const { Authenticating, Sessioning } = concepts;
+const { Authenticating, CommonsConnecting, Sessioning } = concepts;
 
 const Register = endpoint(
   "/auth/register",
@@ -22,6 +22,30 @@ const SignIn = endpoint(
       .then(Sessioning.start({ subject: account }).responds({ session, expiresAt }))
       .then(respond({ username, session, expiresAt })),
   { input: { required: ["username", "password"] } },
+);
+
+// The attempt goes back in a cookie and the browser is sent on to Commons' approval page.
+const StartCommons = endpoint(
+  "/auth/commons/start",
+  ({ attempt, url, expiresAt }) =>
+    receive({})
+      .then(CommonsConnecting.begin({}).responds({ attempt, url, expiresAt }))
+      .then(respond({ url, attempt, attemptExpiresAt: expiresAt })),
+);
+
+// Commons sent the browser back with a code. The attempt comes from the cookie, so only
+// the browser that started this sign-in can finish it.
+const FinishCommons = endpoint(
+  "/auth/commons/finish",
+  ({ attempt, state, code, person, commonsName, account, session, expiresAt, username }) =>
+    receive({ attempt, state, code })
+      .then(CommonsConnecting.complete({ attempt, state, code }).responds({ person, username: commonsName }))
+      .then(Authenticating.connect({ person, username: commonsName }).responds({ account }))
+      .then(Sessioning.start({ subject: account }).responds({ session, expiresAt }))
+      .then(
+        where(Authenticating._username({ account }).is({ username })).then(respond({ username, session, expiresAt })),
+      ),
+  { input: { required: ["attempt", "state", "code"] } },
 );
 
 const Me = endpoint(
@@ -44,6 +68,7 @@ const SignOut = endpoint(
 
 export const composition = {
   Entering: { Register, SignIn },
+  Commons: { StartCommons, FinishCommons },
   Current: { Me },
   Leaving: { SignOut },
 };

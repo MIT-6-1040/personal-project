@@ -13,6 +13,28 @@ export type Json = null | boolean | number | string | Json[] | { [key: string]: 
 export type AppWideError = never;
 
 export type CatchUpWire = {
+  "/auth/commons/finish": {
+    input: {
+      "attempt": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["CommonsConnecting"]["complete"]>[0], ["attempt"]>>;
+      "code": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["CommonsConnecting"]["complete"]>[0], ["code"]>>;
+      "state": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["CommonsConnecting"]["complete"]>[0], ["state"]>>;
+    };
+    output: {
+      "expiresAt": Jsonify<AtPath<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["Sessioning"]["start"]>>, ["expiresAt"]>>;
+      "session": Jsonify<AtPath<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["Sessioning"]["start"]>>, ["session"]>>;
+      "username": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["Authenticating"]["_username"]>>>, ["username"]>>;
+    };
+    error: { error: AppWideError | "COMMONS_REFUSED" | "INVALID_INPUT" | "INVALID_PERSON" | "UNKNOWN_ATTEMPT" };
+  };
+  "/auth/commons/start": {
+    input: Record<string, never>;
+    output: {
+      "attempt": Jsonify<AtPath<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["CommonsConnecting"]["begin"]>>, ["attempt"]>>;
+      "attemptExpiresAt": Jsonify<AtPath<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["CommonsConnecting"]["begin"]>>, ["expiresAt"]>>;
+      "url": Jsonify<AtPath<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["CommonsConnecting"]["begin"]>>, ["url"]>>;
+    };
+    error: { error: AppWideError };
+  };
   "/auth/me": {
     input: {
       "session": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["Sessioning"]["current"]>[0], ["session"]>>;
@@ -57,6 +79,26 @@ export type CatchUpWire = {
   };
   "/feed": {
     input: {
+      "search"?: Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_catalog"]>[0], ["search"]>>;
+      "session": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["Sessioning"]["current"]>[0], ["session"]>>;
+      "source"?: Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_catalog"]>[0], ["source"]>>;
+    };
+    output: {
+      "feed": {
+        "headline": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["headline"]>>;
+        "image": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["image"]>>;
+        "publishedAt": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["publishedAt"]>>;
+        "score": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_page"]>>>, ["score"]>>;
+        "story": Jsonify<AllOf<[AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>[0], ["story"]>, AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_page"]>>>, ["story"]>]>>;
+        "summary": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["summary"]>>;
+        "topics": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_topics"]>>>, ["topic"]>>[];
+      }[];
+    };
+    error: { error: AppWideError | "INVALID_INPUT" | "UNKNOWN_SESSION" };
+  };
+  "/feed/more": {
+    input: {
+      "offset": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_page"]>[0], ["offset"]>>;
       "session": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["Sessioning"]["current"]>[0], ["session"]>>;
     };
     output: {
@@ -64,8 +106,35 @@ export type CatchUpWire = {
         "headline": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["headline"]>>;
         "image": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["image"]>>;
         "publishedAt": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["publishedAt"]>>;
-        "score": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_feed"]>>>, ["score"]>>;
-        "story": Jsonify<AllOf<[AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>[0], ["story"]>, AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_feed"]>>>, ["story"]>]>>;
+        "score": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_page"]>>>, ["score"]>>;
+        "story": Jsonify<AllOf<[AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>[0], ["story"]>, AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_page"]>>>, ["story"]>]>>;
+        "summary": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["summary"]>>;
+        "topics": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_topics"]>>>, ["topic"]>>[];
+      }[];
+    };
+    error: { error: AppWideError | "INVALID_INPUT" | "UNKNOWN_SESSION" };
+  };
+  "/feed/sources": {
+    input: {
+      "session": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["Sessioning"]["current"]>[0], ["session"]>>;
+    };
+    output: {
+      "sources": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_sources"]>>>, ["source"]>>[];
+    };
+    error: { error: AppWideError | "INVALID_INPUT" | "UNKNOWN_SESSION" };
+  };
+  "/history": {
+    input: {
+      "offset"?: Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["ReadingHistory"]["_readings"]>[0], ["offset"]>>;
+      "session": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["Sessioning"]["current"]>[0], ["session"]>>;
+    };
+    output: {
+      "history": {
+        "headline": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["headline"]>>;
+        "image": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["image"]>>;
+        "publishedAt": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["publishedAt"]>>;
+        "readAt": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["ReadingHistory"]["_readings"]>>>, ["readAt"]>>;
+        "story": Jsonify<AllOf<[AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>[0], ["story"]>, AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["ReadingHistory"]["_readings"]>>>, ["story"]>]>>;
         "summary": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["summary"]>>;
         "topics": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_topics"]>>>, ["topic"]>>[];
       }[];
@@ -191,6 +260,23 @@ export type CatchUpWire = {
 export type HttpAppWideError = never;
 
 export type CatchUpWireHttp = {
+  "/auth/commons/finish": {
+    input: {
+      "code": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["CommonsConnecting"]["complete"]>[0], ["code"]>>;
+      "state": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["CommonsConnecting"]["complete"]>[0], ["state"]>>;
+    };
+    output: {
+      "username": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["Authenticating"]["_username"]>>>, ["username"]>>;
+    };
+    error: { error: HttpAppWideError | "INVALID_REQUEST" | "UNAUTHORIZED" };
+  };
+  "/auth/commons/start": {
+    input: Record<string, never>;
+    output: {
+      "url": Jsonify<AtPath<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["CommonsConnecting"]["begin"]>>, ["url"]>>;
+    };
+    error: { error: HttpAppWideError };
+  };
   "/auth/me": {
     input: Record<string, never>;
     output: {
@@ -226,14 +312,58 @@ export type CatchUpWireHttp = {
     error: { error: HttpAppWideError | "INVALID_REQUEST" | "UNAUTHORIZED" };
   };
   "/feed": {
-    input: Record<string, never>;
+    input: {
+      "search"?: Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_catalog"]>[0], ["search"]>>;
+      "source"?: Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_catalog"]>[0], ["source"]>>;
+    };
     output: {
       "feed": {
         "headline": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["headline"]>>;
         "image": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["image"]>>;
         "publishedAt": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["publishedAt"]>>;
-        "score": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_feed"]>>>, ["score"]>>;
-        "story": Jsonify<AllOf<[AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>[0], ["story"]>, AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_feed"]>>>, ["story"]>]>>;
+        "score": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_page"]>>>, ["score"]>>;
+        "story": Jsonify<AllOf<[AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>[0], ["story"]>, AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_page"]>>>, ["story"]>]>>;
+        "summary": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["summary"]>>;
+        "topics": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_topics"]>>>, ["topic"]>>[];
+      }[];
+    };
+    error: { error: HttpAppWideError | "INVALID_REQUEST" | "UNAUTHORIZED" };
+  };
+  "/feed/more": {
+    input: {
+      "offset": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_page"]>[0], ["offset"]>>;
+    };
+    output: {
+      "feed": {
+        "headline": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["headline"]>>;
+        "image": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["image"]>>;
+        "publishedAt": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["publishedAt"]>>;
+        "score": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_page"]>>>, ["score"]>>;
+        "story": Jsonify<AllOf<[AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>[0], ["story"]>, AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["FeedCurating"]["_page"]>>>, ["story"]>]>>;
+        "summary": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["summary"]>>;
+        "topics": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_topics"]>>>, ["topic"]>>[];
+      }[];
+    };
+    error: { error: HttpAppWideError | "INVALID_REQUEST" | "UNAUTHORIZED" };
+  };
+  "/feed/sources": {
+    input: Record<string, never>;
+    output: {
+      "sources": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_sources"]>>>, ["source"]>>[];
+    };
+    error: { error: HttpAppWideError | "INVALID_REQUEST" | "UNAUTHORIZED" };
+  };
+  "/history": {
+    input: {
+      "offset"?: Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["ReadingHistory"]["_readings"]>[0], ["offset"]>>;
+    };
+    output: {
+      "history": {
+        "headline": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["headline"]>>;
+        "image": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["image"]>>;
+        "publishedAt": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["publishedAt"]>>;
+        "readAt": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["ReadingHistory"]["_readings"]>>>, ["readAt"]>>;
+        "story": Jsonify<AllOf<[AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>[0], ["story"]>, AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["ReadingHistory"]["_readings"]>>>, ["story"]>]>>;
         "summary": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_get"]>>>, ["summary"]>>;
         "topics": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["StoryGrouping"]["_topics"]>>>, ["topic"]>>[];
       }[];
