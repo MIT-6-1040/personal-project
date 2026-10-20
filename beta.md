@@ -2,9 +2,9 @@
 
 ## Links
 
-- **Live app:** TODO add your address, such as https://catchup.mit-sdg.dev
-- **Screen recording (2 minutes):** TODO add the YouTube link
-- **Visual design study:** TODO add the link to the two slides
+- **Live app:** https://catchup.mit-sdg.dev
+- **Screen recording (2 minutes):** [CatchUp YouTube Video](https://youtu.be/iZD-DK6DTV4)
+- **Visual design study:** [CatchUp_Visual_Design_Study.pdf](images/CatchUp_Visual_Design_Study.pdf)
 - **Automated tests:** [how to run them](README.md#running-the-tests) and [saved output](tests/output.txt)
 - **Concept specifications:** [design/concepts](design/concepts), composed in [design/compositions](design/compositions)
 
