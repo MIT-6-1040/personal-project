@@ -2,14 +2,14 @@
 
 CatchUp is a personalized news app that helps readers stay informed about the specific topics they care about without spending too much time searching through unrelated or repeated news.
 
-**Live app:** TODO add your address, such as https://catchup.mit-sdg.dev
+**Live app:** https://catchup.mit-sdg.dev
 
 ## Deliverables
 
 - [P1: Design](design.md)
 - [P2: MVP — user journey and design notes](mvp.md)
 - [P3: Beta — user journey, changes, and testing](beta.md)
-  - Screen recording: TODO add the YouTube link
+  - Screen recording: [CatchUp YouTube Video](https://youtu.be/iZD-DK6DTV4)
   - Visual design study: [CatchUp_Visual_Design_Study.pdf](images/CatchUp_Visual_Design_Study.pdf)
   - Test output: [tests/output.txt](tests/output.txt)
 
