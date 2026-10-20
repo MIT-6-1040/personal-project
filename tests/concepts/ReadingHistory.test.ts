@@ -10,6 +10,8 @@ test("principle: a recorded story is part of the user's history", async () => {
   expect(await history._hasRead({ user: "alex", story: "barca" })).toEqual({ read: true });
   expect(await history._hasRead({ user: "alex", story: "climate" })).toEqual({ read: false });
   await expect(history.record({ user: "alex", story: "barca" })).rejects.toThrow(AlreadyRead);
+  // The refused second record added nothing.
+  expect(await history._readStories({ user: "alex" })).toEqual({ stories: ["barca"] });
 });
 
 test("read stories come back most recent first, per user", async () => {

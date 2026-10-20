@@ -28,6 +28,7 @@
     "start": "bun src/main.ts",
     "preview": "bun run db:up && bun run build && NODE_ENV=production PORT=3000 PUBLIC_ORIGIN=http://127.0.0.1:3000 bun run start",
     "test": "bun test",
+    "test:save": "bun scripts/save-test-output.ts",
     "check:design": "sync-engine check-design design/concepts/*.md design/types.md design/compositions/*.md",
     "dev": "bun run db:up && bun run --parallel dev:backend dev:frontend",
     "seed": "bun scripts/seed.ts",

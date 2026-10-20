@@ -14,6 +14,16 @@ test("principle: a session resolves to its subject until it ends", async () => {
   await expect(sessions.current({ session: "made-up" })).rejects.toThrow(UnknownSession);
 });
 
+test("ending a session twice, or one that never existed, is refused and ends nothing else", async () => {
+  const { session } = await sessions.start({ subject: "kim" });
+  const { session: other } = await sessions.start({ subject: "lee" });
+  await sessions.end({ session });
+  await expect(sessions.end({ session })).rejects.toThrow(UnknownSession);
+  await expect(sessions.end({ session: "made-up" })).rejects.toThrow(UnknownSession);
+  // Lee's session is untouched.
+  expect(await sessions.current({ session: other })).toEqual({ subject: "lee" });
+});
+
 test("a session stops working after it expires", async () => {
   const { session } = await sessions.start({ subject: "sam" });
   expect(await sessions._active({ session })).toHaveLength(1);

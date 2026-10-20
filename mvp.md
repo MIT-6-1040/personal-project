@@ -4,7 +4,7 @@
 
 [Watch the walkthrough (Google Drive)](https://drive.google.com/file/d/1BxoQzg0wxPSOeYdm3D8m4JX9iKAUXAIu/view?usp=sharing)
 
-The video follows the user journey below: registering, opening a story, watching the feed rerank, and editing interests.i
+The video follows the user journey below: registering, opening a story, watching the feed rerank, and editing interests.
 
 ## User Journey
 

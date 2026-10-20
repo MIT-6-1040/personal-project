@@ -43,8 +43,12 @@ test("a blank Commons person is refused and makes no account", async () => {
   await expect(auth.register({ username: "ghost", password: "longenough" })).resolves.toBeDefined();
 });
 
-test("bad usernames and short passwords are refused", async () => {
+test("bad usernames and short passwords are refused, and no account is made", async () => {
   await expect(auth.register({ username: "a!", password: "longenough" })).rejects.toThrow(InvalidUsername);
   await expect(auth.register({ username: "sam", password: "short" })).rejects.toThrow(WeakPassword);
+  await expect(auth.register({ username: "sam", password: "p".repeat(129) })).rejects.toThrow(WeakPassword);
   await expect(auth.authenticate({ username: "ghost", password: "whatever1" })).rejects.toThrow(InvalidCredentials);
+  // "sam" was never created, so it can still be registered.
+  await expect(auth.authenticate({ username: "sam", password: "short" })).rejects.toThrow(InvalidCredentials);
+  await expect(auth.register({ username: "sam", password: "longenough" })).resolves.toBeDefined();
 });

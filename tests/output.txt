@@ -1,0 +1,59 @@
+Saved on 2026-10-19T23:47:44.295Z
+
+37 pass
+ 0 fail
+ 161 expect() calls
+Ran 37 tests across 8 files. [738.00ms]
+
+tests/news/ingest.test.ts
+  (pass) the first run groups articles into stories and skips old news
+  (pass) a later run skips articles it already has and revises a story another outlet joins
+  (pass) runs after the first one add at most the per-run limit, newest first
+  (pass) two runs at the same time don't both add news
+  (pass) a batch the editor fails on is skipped and nothing from it is added
+
+tests/concepts/StoryGrouping.test.ts
+  (pass) principle: articles with the same key join one story
+  (pass) a different key makes a new story, and stories list newest first
+  (pass) the catalog can be narrowed by search words and by source
+  (pass) revise rewrites the summary and topics but keeps the headline and image
+  (pass) revise refuses an unknown story, a long summary, or bad topics, and changes nothing
+  (pass) addArticle refuses a bad headline, summary, or topics, and adds nothing
+  (pass) a story keeps the first image it gets, even from a later article
+  (pass) an unknown story has no rows
+
+tests/concepts/Sessioning.test.ts
+  (pass) principle: a session resolves to its subject until it ends
+  (pass) ending a session twice, or one that never existed, is refused and ends nothing else
+  (pass) a session stops working after it expires
+
+tests/concepts/FeedCurating.test.ts
+  (pass) principle: stories matching the user's interests come first, read ones are left out
+  (pass) the feed comes in pages in ranked order
+  (pass) generating again replaces the old feed
+
+tests/concepts/CommonsConnecting.test.ts
+  (pass) principle: a sign-in begun here is finished once with Commons' code
+  (pass) every sign-in gets its own state and challenge
+  (pass) a wrong state, an unknown attempt, or an expired one is refused without asking Commons
+  (pass) a code Commons doesn't accept is refused and the attempt is kept
+
+tests/concepts/ReadingHistory.test.ts
+  (pass) principle: a recorded story is part of the user's history
+  (pass) read stories come back most recent first, per user
+  (pass) readings list each story with when it was read, most recent first
+  (pass) readings come in pages that don't overlap
+
+tests/concepts/InterestTracking.test.ts
+  (pass) principle: interests grow from reading and stay under the user's control
+  (pass) one user's interests don't affect another's
+  (pass) add refuses a duplicate, a blank topic, and a bad count
+  (pass) setCount and remove refuse a topic the user doesn't have, and a bad count, without changes
+  (pass) a count can go down to 0, and reset only clears that user
+
+tests/concepts/Authenticating.test.ts
+  (pass) principle: register, then only the right password signs in
+  (pass) a Commons person always gets the same account, which has no password
+  (pass) a Commons username that is taken or doesn't fit gets a usable one
+  (pass) a blank Commons person is refused and makes no account
+  (pass) bad usernames and short passwords are refused, and no account is made
