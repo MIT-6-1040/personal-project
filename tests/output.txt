@@ -1,9 +1,30 @@
-Saved on 2026-10-19T23:47:44.295Z
+Saved on 2026-10-27T01:33:36.507Z
 
-37 pass
+51 pass
  0 fail
- 161 expect() calls
-Ran 37 tests across 8 files. [738.00ms]
+ 229 expect() calls
+Ran 51 tests across 9 files. [1240.00ms]
+
+tests/integration/app.test.ts
+  (pass) a username works in any capitalization and shows as registered
+  (pass) a wrong password or unknown user is refused and gets no session
+  (pass) signing out ends the session for good
+
+the reading loop
+  (pass) reading a story records it, raises its topics, and takes it out of the feed
+  (pass) opening a story again, from History, raises nothing
+  (pass) interests and history persist across sign-ins
+
+access control
+  (pass) every endpoint except signing in refuses a visitor who isn't signed in
+  (pass) a made-up session is refused, whether in the cookie or the body
+  (pass) one user's actions never reach another user's interests or history
+  (pass) a request from another website is refused
+
+errors
+  (pass) bad requests are refused with a clear code and change nothing
+  (pass) opening a story that doesn't exist records nothing
+  (pass) registering with a bad username or short password is refused
 
 tests/news/ingest.test.ts
   (pass) the first run groups articles into stories and skips old news
@@ -53,6 +74,7 @@ tests/concepts/InterestTracking.test.ts
 
 tests/concepts/Authenticating.test.ts
   (pass) principle: register, then only the right password signs in
+  (pass) usernames match in any capitalization and keep how they were registered
   (pass) a Commons person always gets the same account, which has no password
   (pass) a Commons username that is taken or doesn't fit gets a usable one
   (pass) a blank Commons person is refused and makes no account

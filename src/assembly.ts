@@ -1,4 +1,5 @@
 import { assemble } from "@mit-sdg/sync-engine/assembly";
+import type { Db } from "mongodb";
 import { composition as feed } from "./compositions/Feed.ts";
 import { composition as history } from "./compositions/History.ts";
 import { composition as interests } from "./compositions/Interests.ts";
@@ -15,22 +16,23 @@ import { applicationConceptSet } from "./concepts.ts";
 import { db } from "./db.ts";
 import { publicOrigin } from "./http.ts";
 
-export function assembleApplication() {
+// The integration tests pass their own database, so they never touch the app's data.
+export function assembleApplication(database: Db = db) {
   return assemble({
     conceptSet: applicationConceptSet,
     // Every concept keeps its state in MongoDB, so each one gets the database.
     instances: {
-      Authenticating: new AuthenticatingConcept(db),
+      Authenticating: new AuthenticatingConcept(database),
       // Commons sends people back to this app's own address after they approve it.
-      CommonsConnecting: new CommonsConnectingConcept(db, {
+      CommonsConnecting: new CommonsConnectingConcept(database, {
         app: publicOrigin,
         commons: process.env.COMMONS_URL ?? "https://class.mit-sdg.dev",
       }),
-      Sessioning: new SessioningConcept(db),
-      StoryGrouping: new StoryGroupingConcept(db),
-      InterestTracking: new InterestTrackingConcept(db),
-      ReadingHistory: new ReadingHistoryConcept(db),
-      FeedCurating: new FeedCuratingConcept(db),
+      Sessioning: new SessioningConcept(database),
+      StoryGrouping: new StoryGroupingConcept(database),
+      InterestTracking: new InterestTrackingConcept(database),
+      ReadingHistory: new ReadingHistoryConcept(database),
+      FeedCurating: new FeedCuratingConcept(database),
     },
     composition: { Sessions: sessions, Stories: stories, Interests: interests, Feed: feed, History: history },
     // Print what went wrong. Otherwise a failure only shows up as INTERNAL_ERROR.

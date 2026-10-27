@@ -12,6 +12,8 @@ CatchUp is a personalized news app that helps readers stay informed about the sp
   - Screen recording: [CatchUp YouTube Video](https://youtu.be/iZD-DK6DTV4)
   - Visual design study: [CatchUp_Visual_Design_Study.pdf](images/CatchUp_Visual_Design_Study.pdf)
   - Test output: [tests/output.txt](tests/output.txt)
+- [P4: Final design document](final.md)
+  - Final video: _link to be added_
 
 The concept specifications are in [design/concepts](design/concepts), and the compositions that connect them are in [design/compositions](design/compositions).
 
@@ -63,7 +65,7 @@ The tests use [Bun's test runner](https://bun.sh/docs/cli/test) against a real M
    bun test
    ```
 
-   Each test file gets its own new database named `catchup_test_<random>`, which is dropped when the file finishes, so the tests never touch the app's data. Every test creates the data it needs by calling concept actions. The news pipeline tests use stand-in feeds and a stand-in editor, so they need neither the network nor an API key.
+   Each test file gets its own new database named `catchup_test_<random>`, which is dropped when the file finishes, so the tests never touch the app's data. Every test creates the data it needs by calling concept actions. The integration tests in [tests/integration](tests/integration) instead send requests through the same HTTP handler the deployed app uses, checking the reading loop, sign-in, access control, and error codes end to end. The news pipeline tests use stand-in feeds and a stand-in editor, so they need neither the network nor an API key.
 
 3. To save the results, run:
 
@@ -84,5 +86,5 @@ The tests use [Bun's test runner](https://bun.sh/docs/cli/test) against a real M
 | `src/compositions/` | Endpoints and reactions that connect the concepts                     |
 | `src/news/`         | Fetching RSS feeds and asking Claude to group and summarize them      |
 | `web/`              | The Vue frontend                                                      |
-| `tests/`            | Concept tests, news pipeline tests, and saved output                  |
+| `tests/`            | Concept, integration, and news pipeline tests, and saved output       |
 | `scripts/`          | One-off commands: fetching news, clearing stories, saving test output |

@@ -18,6 +18,10 @@ interface Account {
 
 const USERNAME = /^[A-Za-z0-9_-]{3,32}$/;
 
+// Usernames match without regard to capitalization, so "Alex" and "alex" are the same
+// account, but each is shown the way it was registered.
+const ANY_CASE = { locale: "en", strength: 2 };
+
 // We never store the password itself, only a slow hash of it with a random salt.
 function hash(password: string, salt: string) {
   return pbkdf2Sync(password, salt, 100_000, 32, "sha256").toString("hex");
@@ -41,7 +45,7 @@ export class AuthenticatingConcept {
       throw new WeakPassword("A password must have 8 to 128 characters.");
     }
     await this.#index();
-    if (await this.accounts.findOne({ username })) {
+    if (await this.accounts.findOne({ username }, { collation: ANY_CASE })) {
       throw new UsernameTaken("That username is already taken.");
     }
     const account = crypto.randomUUID();
@@ -51,7 +55,7 @@ export class AuthenticatingConcept {
   }
 
   async authenticate({ username, password }: { username: string; password: string }) {
-    const found = await this.accounts.findOne({ username });
+    const found = await this.accounts.findOne({ username }, { collation: ANY_CASE });
     // An account made through Commons has no password, so no password can sign in to it.
     // Compare in constant time so the response time doesn't leak anything.
     const matches =
@@ -77,7 +81,7 @@ export class AuthenticatingConcept {
     // Commons usernames may not fit our rules or may already be taken here.
     const base = (username.replace(/[^A-Za-z0-9_-]/g, "-").slice(0, 28) || "commons").padEnd(3, "-");
     let name = base;
-    for (let n = 2; await this.accounts.findOne({ username: name }); n++) name = `${base}-${n}`;
+    for (let n = 2; await this.accounts.findOne({ username: name }, { collation: ANY_CASE }); n++) name = `${base}-${n}`;
 
     const account = crypto.randomUUID();
     await this.accounts.insertOne({ _id: account, username: name, commonsPerson: person });
@@ -87,6 +91,12 @@ export class AuthenticatingConcept {
   async #index() {
     if (this.indexed) return;
     await this.accounts.createIndex({ username: 1 }, { unique: true });
+    // Two registrations at once can both pass the check in register, so the database
+    // also refuses a second "Alex" when "alex" exists.
+    await this.accounts.createIndex(
+      { username: 1 },
+      { name: "username_any_case", unique: true, collation: ANY_CASE },
+    );
     // Only accounts linked to Commons have this field, so the index skips the rest.
     await this.accounts.createIndex(
       { commonsPerson: 1 },

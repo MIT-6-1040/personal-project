@@ -14,13 +14,16 @@ const Register = endpoint(
   { input: { required: ["username", "password"] } },
 );
 
+// Answers the username as registered, since it may have been typed in another capitalization.
 const SignIn = endpoint(
   "/auth/sign-in",
-  ({ username, password, account, session, expiresAt }) =>
-    receive({ username, password })
-      .then(Authenticating.authenticate({ username, password }).responds({ account }))
+  ({ typed, password, account, session, expiresAt, username }) =>
+    receive({ username: typed, password })
+      .then(Authenticating.authenticate({ username: typed, password }).responds({ account }))
       .then(Sessioning.start({ subject: account }).responds({ session, expiresAt }))
-      .then(respond({ username, session, expiresAt })),
+      .then(
+        where(Authenticating._username({ account }).is({ username })).then(respond({ username, session, expiresAt })),
+      ),
   { input: { required: ["username", "password"] } },
 );
 

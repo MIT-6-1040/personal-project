@@ -608,8 +608,8 @@ then
 ### Sessions.Commons.FinishCommons
 
 Authored path: `Sessions.Commons.FinishCommons`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 19.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 30.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 20.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 31.
 
 ```reaction
 when RequestBoundary.request (attempt, code, path: "/auth/commons/finish", requestId, state)
@@ -620,8 +620,8 @@ then
 ### Sessions.Commons.FinishCommons#2
 
 Authored path: `Sessions.Commons.FinishCommons`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 19.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 30.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 20.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 31.
 
 ```reaction
 when CommonsConnecting.complete (attempt, code, state, person, username: commonsName), asked by Sessions.Commons.FinishCommons
@@ -632,8 +632,8 @@ then
 ### Sessions.Commons.FinishCommons#3
 
 Authored path: `Sessions.Commons.FinishCommons`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 19.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 30.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 20.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 31.
 
 ```reaction
 when Authenticating.connect (person, username: commonsName, account), asked by Sessions.Commons.FinishCommons#2
@@ -644,8 +644,8 @@ then
 ### Sessions.Commons.FinishCommons#4
 
 Authored path: `Sessions.Commons.FinishCommons`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 19.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 30.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 20.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 31.
 
 ```reaction
 when Sessioning.start (subject: account, expiresAt, session), asked by Sessions.Commons.FinishCommons#3
@@ -659,8 +659,8 @@ then
 ### Sessions.Commons.StartCommons
 
 Authored path: `Sessions.Commons.StartCommons`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 14.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 29.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 15.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 30.
 
 ```reaction
 when RequestBoundary.request (path: "/auth/commons/start", requestId)
@@ -671,8 +671,8 @@ then
 ### Sessions.Commons.StartCommons#2
 
 Authored path: `Sessions.Commons.StartCommons`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 14.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 29.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 15.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 30.
 
 ```reaction
 when CommonsConnecting.begin (attempt, expiresAt, url), asked by Sessions.Commons.StartCommons
@@ -685,8 +685,8 @@ then
 ### Sessions.Current.Me
 
 Authored path: `Sessions.Current.Me`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 33.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 38.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 34.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 39.
 
 ```reaction
 when RequestBoundary.request (path: "/auth/me", requestId, session)
@@ -697,8 +697,8 @@ then
 ### Sessions.Current.Me#2
 
 Authored path: `Sessions.Current.Me`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 33.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 38.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 34.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 39.
 
 ```reaction
 when Sessioning.current (session, subject: account), asked by Sessions.Current.Me
@@ -713,7 +713,7 @@ then
 
 Authored path: `Sessions.Entering.Register`.
 - Covered by [Sessions](../design/compositions/Sessions.md), line 3.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 9.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 10.
 
 ```reaction
 when RequestBoundary.request (password, path: "/auth/register", requestId, username)
@@ -725,7 +725,7 @@ then
 
 Authored path: `Sessions.Entering.Register`.
 - Covered by [Sessions](../design/compositions/Sessions.md), line 3.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 9.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 10.
 
 ```reaction
 when Authenticating.register (password, username, account), asked by Sessions.Entering.Register
@@ -737,7 +737,7 @@ then
 
 Authored path: `Sessions.Entering.Register`.
 - Covered by [Sessions](../design/compositions/Sessions.md), line 3.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 9.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 10.
 
 ```reaction
 when Sessioning.start (subject: account, expiresAt, session), asked by Sessions.Entering.Register#2
@@ -752,22 +752,22 @@ then
 
 Authored path: `Sessions.Entering.SignIn`.
 - Covered by [Sessions](../design/compositions/Sessions.md), line 4.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 10.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 11.
 
 ```reaction
-when RequestBoundary.request (password, path: "/auth/sign-in", requestId, username)
+when RequestBoundary.request (password, path: "/auth/sign-in", requestId, username: typed)
 then
-  Authenticating.authenticate (password, username)
+  Authenticating.authenticate (password, username: typed)
 ```
 
 ### Sessions.Entering.SignIn#2
 
 Authored path: `Sessions.Entering.SignIn`.
 - Covered by [Sessions](../design/compositions/Sessions.md), line 4.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 10.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 11.
 
 ```reaction
-when Authenticating.authenticate (password, username, account), asked by Sessions.Entering.SignIn
+when Authenticating.authenticate (password, username: typed, account), asked by Sessions.Entering.SignIn
 then
   Sessioning.start (subject: account)
 ```
@@ -776,13 +776,13 @@ then
 
 Authored path: `Sessions.Entering.SignIn`.
 - Covered by [Sessions](../design/compositions/Sessions.md), line 4.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 10.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 11.
 
 ```reaction
 when Sessioning.start (subject: account, expiresAt, session), asked by Sessions.Entering.SignIn#2
 where
-  earlier, Authenticating.authenticate (password, username, account), asked by Sessions.Entering.SignIn
-  earlier, RequestBoundary.request (password, path: "/auth/sign-in", requestId, username)
+  Authenticating._username (account) has (username)
+  earlier, RequestBoundary.request (password, path: "/auth/sign-in", requestId, username: typed)
 then
   RequestBoundary.respond (expiresAt, requestId, session, username)
 ```
@@ -790,8 +790,8 @@ then
 ### Sessions.Leaving.SignOut
 
 Authored path: `Sessions.Leaving.SignOut`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 35.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 39.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 36.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 40.
 
 ```reaction
 when RequestBoundary.request (path: "/auth/sign-out", requestId, session)
@@ -802,8 +802,8 @@ then
 ### Sessions.Leaving.SignOut#2
 
 Authored path: `Sessions.Leaving.SignOut`.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 35.
-- Covered by [Sessions](../design/compositions/Sessions.md), line 39.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 36.
+- Covered by [Sessions](../design/compositions/Sessions.md), line 40.
 
 ```reaction
 when Sessioning.end (session, ended: signedOut), asked by Sessions.Leaving.SignOut

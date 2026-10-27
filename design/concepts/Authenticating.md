@@ -12,7 +12,8 @@ it was registered with, or the Commons identity it is linked to.
 
 For example, Alex registers the username `alex` with a password. Another registration of
 `alex` is refused. Signing in as `alex` with the wrong password is refused, and signing
-in with the right password returns Alex's account. Sam has a Commons account instead, so
+in with the right password returns Alex's account, whether Alex types `alex` or `Alex`,
+because usernames match without regard to capitalization. Sam has a Commons account instead, so
 connecting Sam's Commons identity creates an account for Sam with no password, named
 after their Commons username. Connecting the same Commons identity again returns that
 same account, so Sam keeps their interests and history, and nobody can sign in to it
@@ -35,6 +36,7 @@ a set of Accounts with
   an optional unique commonsPerson String
 
 Rule: an account has a passwordHash, a commonsPerson, or both.
+Rule: no two usernames differ only in capitalization; usernames match in any capitalization and are shown as registered.
 ```
 
 ## Actions
@@ -47,7 +49,7 @@ register (username: String, password: String) : returns (account: Account)
   where password is shorter than 8 characters or longer than 128 characters
   then
     refuses WEAK_PASSWORD "A password must have 8 to 128 characters."
-  where username is already registered
+  where username is already registered, in any capitalization
   then
     refuses USERNAME_TAKEN "That username is already taken."
   where username and password are accepted
@@ -59,7 +61,7 @@ authenticate (username: String, password: String) : returns (account: Account)
   where username is unknown, the account has no password, or password does not match
   then
     refuses INVALID_CREDENTIALS "The username or password is incorrect."
-  where password matches
+  where password matches the account whose username matches, in any capitalization
   then
     returns account
 

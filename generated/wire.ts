@@ -64,7 +64,7 @@ export type CatchUpWire = {
     output: {
       "expiresAt": Jsonify<AtPath<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["Sessioning"]["start"]>>, ["expiresAt"]>>;
       "session": Jsonify<AtPath<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["Sessioning"]["start"]>>, ["session"]>>;
-      "username": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["Authenticating"]["authenticate"]>[0], ["username"]>>;
+      "username": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["Authenticating"]["_username"]>>>, ["username"]>>;
     };
     error: { error: AppWideError | "INVALID_CREDENTIALS" | "INVALID_INPUT" };
   };
@@ -300,7 +300,7 @@ export type CatchUpWireHttp = {
       "username": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["Authenticating"]["authenticate"]>[0], ["username"]>>;
     };
     output: {
-      "username": Jsonify<AtPath<Parameters<(typeof ApplicationConceptSet.concepts)["Authenticating"]["authenticate"]>[0], ["username"]>>;
+      "username": Jsonify<AtPath<QueryRow<Awaited<ReturnType<(typeof ApplicationConceptSet.concepts)["Authenticating"]["_username"]>>>, ["username"]>>;
     };
     error: { error: HttpAppWideError | "INVALID_REQUEST" | "UNAUTHORIZED" };
   };

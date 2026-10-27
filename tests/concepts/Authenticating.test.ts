@@ -19,6 +19,17 @@ test("principle: register, then only the right password signs in", async () => {
   expect(await auth._username({ account })).toEqual([{ username: "alex" }]);
 });
 
+test("usernames match in any capitalization and keep how they were registered", async () => {
+  const { account } = await auth.register({ username: "Desire", password: "catchup2026" });
+  expect(await auth.authenticate({ username: "desire", password: "catchup2026" })).toEqual({ account });
+  expect(await auth.authenticate({ username: "DESIRE", password: "catchup2026" })).toEqual({ account });
+  await expect(auth.register({ username: "desire", password: "another-pass" })).rejects.toThrow(UsernameTaken);
+  expect(await auth._username({ account })).toEqual([{ username: "Desire" }]);
+  // A Commons user named "DESIRE" doesn't take over or collide with the account.
+  const commons = await auth.connect({ person: "commons-desire", username: "DESIRE" });
+  expect(await auth._username(commons)).toEqual([{ username: "DESIRE-2" }]);
+});
+
 test("a Commons person always gets the same account, which has no password", async () => {
   const { account } = await auth.connect({ person: "commons-sam", username: "sam_k" });
   expect(await auth._username({ account })).toEqual([{ username: "sam_k" }]);

@@ -2,7 +2,8 @@
 
 Registering [creates an account and signs the person in](reaction:Sessions.Entering.Register)
 by starting a session for the new account. [Signing in](reaction:Sessions.Entering.SignIn)
-checks the password and starts a new session. The browser keeps the session in a cookie,
+checks the password and starts a new session. The username may be typed in any
+capitalization, and the answer gives it the way it was registered. The browser keeps the session in a cookie,
 so the frontend never handles it directly.
 
 ```endpoints
