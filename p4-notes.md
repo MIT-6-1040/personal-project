@@ -43,17 +43,3 @@ which sends requests through the same HTTP handler the deployed app uses.
   sessions, one user's actions never reaching another, requests from other websites, and
   error codes for bad input.
 - `assembleApplication` takes a database, so the integration tests use a throwaway one.
-
-## Known limitations found in review
-
-- No limit on sign-in attempts, so passwords can be guessed by brute force. A real
-  deployment would add a delay or a lockout.
-- Before deploying: the new index can't be built if the live database already has two
-  usernames differing only in capitalization. Check first.
-
-## Still to do
-
-- Polish pass on the deployed app (phone, new account with no interests, error messages).
-- Test persistence, access control, and errors on the deployed app by hand, and note results.
-- Final video (≤ 3 min, narrated).
-- Turn these notes plus `beta.md` into the 1–2 page design document and link it from the README.

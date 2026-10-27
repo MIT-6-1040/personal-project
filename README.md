@@ -13,7 +13,7 @@ CatchUp is a personalized news app that helps readers stay informed about the sp
   - Visual design study: [CatchUp_Visual_Design_Study.pdf](images/CatchUp_Visual_Design_Study.pdf)
   - Test output: [tests/output.txt](tests/output.txt)
 - [P4: Final design document](final.md)
-  - Final video: _link to be added_
+  - Final video: [CatchUp Final Demo](https://youtu.be/PIXC6_5pIrU)
 
 The concept specifications are in [design/concepts](design/concepts), and the compositions that connect them are in [design/compositions](design/compositions).
 

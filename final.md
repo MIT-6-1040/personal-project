@@ -8,7 +8,7 @@ across outlets and summarized) ranked by specific interests the reader can see a
 - **Specs by version:** [P1](https://github.com/MIT-6-1040/personal-project/blob/733cf966970ecb5e2b8271e56fe17c747c9d616e/design.md#concept-design) ·
   [MVP](https://github.com/MIT-6-1040/personal-project/tree/ce94e063a38808ce2738042968d9dda42a9d0e71/design/concepts) ·
   [Beta](https://github.com/MIT-6-1040/personal-project/tree/258f32c29446c3771c2df8e19585de8507d11dd4/design/concepts) ·
-  [Final](design/concepts)
+  [Final](https://github.com/MIT-6-1040/personal-project/tree/4bf5ed9bba06687f26703cb724ab9914b106d2ac/design/concepts)
 
 ## The design in one picture
 
@@ -44,7 +44,7 @@ rerank the feed.** Everything else was added around it.
   now takes opaque candidates, weights, and exclusions, filled in by the Feed composition,
   so no concept depends on another. It also keeps the ranked feed so later pages
   (`_page`) don't shift while the reader scrolls.
-- **ReadingHistory** records *when* a story was read, which powers the History page.
+- **ReadingHistory** records _when_ a story was read, which powers the History page.
 - **Three new concepts:** Authenticating (password or Commons accounts), Sessioning
   (cookie sessions), and CommonsConnecting (the class sign-in protocol).
 - **Reads became queries.** P1's `topics`, `getStories`, `hasRead`, etc. are now `_` queries,
