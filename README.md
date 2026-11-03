@@ -14,6 +14,7 @@ CatchUp is a personalized news app that helps readers stay informed about the sp
   - Test output: [tests/output.txt](tests/output.txt)
 - [P4: Final design document](final.md)
   - Final video: [CatchUp Final Demo](https://youtu.be/PIXC6_5pIrU)
+- [P5: User testing — task list, study reports, and design flaws](user-testing.md)
 
 The concept specifications are in [design/concepts](design/concepts), and the compositions that connect them are in [design/compositions](design/compositions).
 
